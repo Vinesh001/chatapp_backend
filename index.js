@@ -12,6 +12,8 @@ import cors from 'cors'
 import { app,server } from "./socket/socket.js";
 dotenv.config({});
 
+app.set("trust proxy", 1);
+
 connectDB();
 
 app.use(express.json());
