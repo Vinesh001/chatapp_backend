@@ -6,6 +6,7 @@ const isAuthenticated = async(req, res, next)=>{
         const token = req.cookies.token;
         // console.log(token);
         if(!token){
+            console.log("checking.....vin.....")
             return res.status(401).json({
                 message:"token does not exit!"
             }) 
