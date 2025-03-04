@@ -17,7 +17,7 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({
-    origin:"https://chatapp-fm3v.onrender.com",
+    origin:"https://chatapp-aom9.onrender.com",
     credentials:true
 }));
 // app.use(cors())
