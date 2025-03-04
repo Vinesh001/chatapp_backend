@@ -1,5 +1,7 @@
 import { Conversation } from "../models/conversationModel.js";
 import {Message} from "../models/messageModel.js";
+import { getReceiverSocketId } from "../socket/socket.js";
+import { io } from "../socket/socket.js";
 
 export const sendMessage = async(req, res)=>{
     try{
@@ -25,14 +27,20 @@ export const sendMessage = async(req, res)=>{
             message,
         })
 
-        if(newMessage){
+        if(newMessage){ 
             gotConversation.messages.push(newMessage._id)
         }
-
-        await gotConversation.save(); 
+        await Promise.all([gotConversation.save(), newMessage.save()]);
+        console.log(newMessage)
+        const recieverSocketId = getReceiverSocketId(recieverId);
+        if(recieverSocketId){
+            console.log("lendi", recieverId)
+            io.to(recieverSocketId).emit("newMessage", newMessage)
+            console.log("doubel lendi ")
+        }
 
         return res.status(201).json({
-            message:"Message sent successfully!"
+            message:newMessage
         })
 
     }catch(error){
@@ -50,8 +58,8 @@ export const getMessage = async(req, res)=>{
         }).populate("messages")
 
 
-        return res.status(201).json({
-            messages:conversation.messages
+        return res.status(200).json({
+            messages:conversation?.messages
         })
     }catch(error){
         console.log(error);

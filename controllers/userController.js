@@ -10,6 +10,7 @@ export const register = async(req, res)=>{
                 message:"All fields are required to fill!"
             })
         }
+        console.log(req.body);
         if(password!==confirmPassword){
             res.status(400).json({
                 message:"Password and confirmPassword are not same!"
@@ -83,6 +84,7 @@ export const login = async(req, res)=>{
 }
 
 export const logout = async(req, res)=>{
+    console.log("logout")
     try{
         return res.status(200).cookie("token", "", {maxAge:0}).json({
             message:"Logout successfully"
@@ -97,6 +99,16 @@ export const otherUsers = async(req, res)=>{
         const loggedInUserId = req.id;
         const others = await User.find({_id: {$ne:loggedInUserId}}).select("-password");
         return res.status(200).json(others)
+    }catch(error){
+        console.log(error);
+    }
+}
+
+export const authUser = async(req, res)=>{
+    try{
+        const loggedInUserId = req.id;
+        const user = await User.find({_id:loggedInUserId}).select("-password");
+        return res.status(200).json(user)
     }catch(error){
         console.log(error);
     }
